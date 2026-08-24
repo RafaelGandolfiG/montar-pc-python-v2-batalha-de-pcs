@@ -236,8 +236,35 @@ while True:
                 continue
         else:
             print('peças disponiveis:')
+            for i in dicionario[componente]:
+                print(f'{i['nome']} - R$ {i['preco']}')
+            peca=input('qual peca voce quer colocar? ')
+            if existe_nome(componente,peca,dicionario):
+                for i in dicionario[componente]:
+                    if i['nome']==peca:
+                        pc[componente]['nome']=i['nome']
+                        pc[componente]['preco']=i['preco']
+                        pc[componente]['pontos']=i['pontos']
+                        usadas.append([componente, i['nome']])
+            else:
+                print('essa peça nao existe')
+                continue
     else:
         print('nao exite esse componente')
         continue
+    print('componentes faltantes:')
+    for i in pc:
+        if pc[i]['nome']=='':
+            falta.append(i)
+    for i in falta:
+        print(i)
+    total=0
+    pontos=0
+    print('total ate agora')
+    for i in pc:
+        total+=pc[i]['preco']
+        pontos+=pc[i]['pontos']
+    print(f'R$ {total:.2f}')
+    print(f'Total de pontos: {pontos}')
         
                         
