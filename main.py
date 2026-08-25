@@ -195,7 +195,8 @@ for i in range(len(componentes)):
     pc[componentes[i]]={
         'nome':'',
         'preco':0,
-        'pontos':0
+        'pontos':0,
+        'marca':''
     }
 
 print('==========Monte seu pc==========')
@@ -204,8 +205,6 @@ usadas=[]
 
 while True:
     falta=[]
-    if len(falta)==0:
-        break
     print('componentes disponiveis:')
     for i in dicionario:
         print(i)
@@ -219,16 +218,17 @@ while True:
                 print('peças disponiveis:')
                 for i in dicionario[componente]:
                     if [componente, i['nome']] not in usadas:
-                        print(f'{i['nome']} - R$ {i['preco']}')
+                        print(f'{i['nome']} - {i['marca']} - R$ {i['preco']}')
                 peca=input('qual peça voce quer? ')
                 if existe_nome(componente,peca,dicionario):
-                        for i in dicionario[componente]:
-                            if i['nome']==peca:
-                                usadas.remove([componente, pc[componente]['nome']])
-                                pc[componente]['nome']=i['nome']
-                                pc[componente]['preco']=i['preco']
-                                pc[componente]['pontos']=i['pontos']
-                                usadas.append([componente, i['nome']])
+                    for i in dicionario[componente]:
+                        if i['nome']==peca:
+                            usadas.remove([componente, pc[componente]['nome']])
+                            pc[componente]['nome']=i['nome']
+                            pc[componente]['preco']=i['preco']
+                            pc[componente]['pontos']=i['pontos']
+                            pc[componente]['marca']=i['marca']
+                            usadas.append([componente, i['nome']])
                 else:
                     print('nao existe essa peça')
                     continue
@@ -237,7 +237,7 @@ while True:
         else:
             print('peças disponiveis:')
             for i in dicionario[componente]:
-                print(f'{i['nome']} - R$ {i['preco']}')
+                print(f'{i['nome']} - {i['marca']} - R$ {i['preco']}')
             peca=input('qual peca voce quer colocar? ')
             if existe_nome(componente,peca,dicionario):
                 for i in dicionario[componente]:
@@ -245,6 +245,7 @@ while True:
                         pc[componente]['nome']=i['nome']
                         pc[componente]['preco']=i['preco']
                         pc[componente]['pontos']=i['pontos']
+                        pc[componente]['marca']=i['marca']
                         usadas.append([componente, i['nome']])
             else:
                 print('essa peça nao existe')
@@ -266,5 +267,104 @@ while True:
         pontos+=pc[i]['pontos']
     print(f'R$ {total:.2f}')
     print(f'Total de pontos: {pontos}')
-        
-                        
+    if len(falta)==0:
+        break
+
+print('componente - peça - preço - pontos')
+
+for i in pc:
+    print(f"{i} - {pc[i]['nome']}  R$ {pc[i]['preco']:,.2f} - {pc[i]['pontos']}")
+
+oponentes=[]
+
+for i in range(4):
+    oponente=dict()
+    for j in range(len(componentes)):
+        oponente[componentes[j]]={
+            'nome':'',
+            'preco':0,
+            'pontos':0
+        }
+    for j in oponente:
+        aleatorio=random.choice(dicionario[j])
+        oponente[j]['nome']=aleatorio['nome']
+        oponente[j]['preco']=aleatorio['preco']
+        oponente[j]['pontos']=aleatorio['pontos']
+    oponentes.append(oponente)
+
+score=0
+
+for i in range(len(oponentes)):
+    pontos_oponente=0
+    print(f'Oponente {i+1}')
+    print('='*20)
+    print('seu pc - pc do oponente')
+    for j in range(len(componentes)):
+        print(f'{pc[componentes[j]]['nome']} - {oponentes[i][componentes[j]]['nome']}')
+    for j in oponentes[i]:
+        pontos_oponente+=oponentes[i][j]['pontos']
+    print(f'voce tem {pontos} pontos')
+    print(f'seu oponente tem {pontos_oponente} pontos')
+    if pontos>pontos_oponente:
+        score+=1
+        print(f'ganhou a {i+1} partida')
+    elif pontos==pontos_oponente:
+        print('desempate no jokenpo')
+        escolha=input('escolha: ')
+        if escolha not in ['pedra','papel','tesoura']:
+            while True:
+                if escolha in ['pedra','papel','tesoura']:
+                    break
+                print('opçao invalida')
+                escolha=input('escolha: ')
+        aleatorio=random.choice(['pedra','papel','tesoura'])
+        if escolha==aleatorio:
+            print('deu empate')
+            while True:
+                aleatorio=random.choice(['pedra','papel','tesoura'])
+                escolha=input('escolha: ')
+                if escolha not in ['pedra','papel','tesoura']:
+                    while True:
+                        if escolha in ['pedra','papel','tesoura']:
+                            break
+                        print('opçao invalida')
+                        escolha=input('escolha: ')
+                if escolha!=aleatorio:
+                    break
+            if escolha=='pedra' and aleatorio=='tesoura':
+                print('venceu')
+                score+=1
+            elif escolha=='papel' and aleatorio=='pedra':
+                print('venceu')
+                score+=1
+            elif escolha=='tesoura' and aleatorio=='papel':
+                print('venceu')
+                score+=1
+            else:
+                print('perdeu')
+                break
+        else:
+            if escolha=='pedra' and aleatorio=='tesoura':
+                print('venceu')
+                score+=1
+            elif escolha=='papel' and aleatorio=='pedra':
+                print('venceu')
+                score+=1
+            elif escolha=='tesoura' and aleatorio=='papel':
+                print('venceu')
+                score+=1
+            else:
+                print('perdeu')
+                break
+    else:
+        print('perdeu')
+        break
+
+print(f'Seu score {score}')
+
+if score == 4:
+    print('VOCE É O CAMPEAO!')
+elif score<=4 and score>=3:
+    print('voce foi muito bem')
+else:
+    print('voce foi eliminado')
